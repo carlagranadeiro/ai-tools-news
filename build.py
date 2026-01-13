@@ -4,19 +4,21 @@ import re
 import urllib.parse
 from datetime import datetime
 
-# ==================================================
-# CONFIGURAÇÃO
-# ==================================================
+# ================= CONFIG =================
 
 MAX_HIGHLIGHTS = 8
 MAX_RELEASE_NOTES = 5
 MAX_VIDEOS = 5
 
 SOURCES = [
-    ("OpenAI", "https://openai.com/news/rss.xml"),
     ("Google AI", "https://blog.google/technology/ai/rss/"),
-    ("Anthropic", "https://www.anthropic.com/news/rss.xml"),
     ("The Verge AI", "https://www.theverge.com/artificial-intelligence/rss/index.xml"),
+]
+
+FALLBACK_HIGHLIGHTS = [
+    ("OpenAI", "ChatGPT roadmap and platform updates", "https://openai.com/news"),
+    ("Anthropic", "Claude models and agent capabilities", "https://www.anthropic.com/news"),
+    ("Microsoft", "Copilot and AI platform evolution", "https://www.microsoft.com/blog"),
 ]
 
 VIDEO_SUGGESTIONS = [
@@ -35,11 +37,9 @@ RELEASE_NOTES_DATA = [
     ("jan 2026", "Slack", "Melhorias em Huddles e workflows privados.", "https://slack.com/updates"),
 ]
 
-# ==================================================
-# UTILITÁRIOS
-# ==================================================
+# ================= UTILS =================
 
-def clean(text: str) -> str:
+def clean(text):
     return re.sub(r"[<>]", "", text).strip()
 
 def fetch_rss(url, limit=5):
@@ -57,28 +57,26 @@ def fetch_rss(url, limit=5):
     except Exception:
         return []
 
-# ==================================================
-# GERADORES DE HTML
-# ==================================================
+# ================= HTML BUILDERS =================
 
 def highlight_card(title, source, link):
     return f"""
-    <div class="card" style="cursor:pointer" onclick="window.open('{link}','_blank')">
+    <div class="card">
         <span class="tag">{source}</span>
         <h3>{title}</h3>
         <p>Atualização relevante publicada por {source}.</p>
-        <a href="{link}" target="_blank">Ler mais →</a>
+        <a href="{link}" target="_blank" rel="noopener">Ler na fonte →</a>
     </div>
     """
 
 def video_card(channel, title):
     query = urllib.parse.quote_plus(f"{channel} {title}")
-    youtube_search = f"https://www.youtube.com/results?search_query={query}"
+    link = f"https://www.youtube.com/results?search_query={query}"
     return f"""
-    <div class="card" style="cursor:pointer" onclick="window.open('{youtube_search}','_blank')">
-        <strong>▶ {clean(channel)}</strong>
-        <p>{clean(title)}</p>
-        <a href="{youtube_search}" target="_blank">Ver no YouTube →</a>
+    <div class="card">
+        <strong>▶ {channel}</strong>
+        <p>{title}</p>
+        <a href="{link}" target="_blank" rel="noopener">Ver no YouTube →</a>
     </div>
     """
 
@@ -88,78 +86,65 @@ def release_row(date, tool, change, link):
         <td>{date}</td>
         <td>{tool}</td>
         <td>{change}</td>
-        <td><a href="{link}" target="_blank">Fonte</a></td>
+        <td><a href="{link}" target="_blank" rel="noopener">Fonte</a></td>
     </tr>
     """
 
-# ==================================================
-# MAIN
-# ==================================================
+# ================= MAIN =================
 
 def main():
     today = datetime.now().strftime("%d %b %Y")
 
-    highlights_html = []
-    release_rows = []
-    videos_html = []
-    links_html = []
+    highlights = []
+    links = []
+    videos = []
+    releases = []
 
-    # -------- HIGHLIGHTS + LINKS --------
+    # ---- HIGHLIGHTS ----
     for source, url in SOURCES:
-        items = fetch_rss(url, limit=3)
-        for title, link in items:
-            if len(highlights_html) < MAX_HIGHLIGHTS:
-                highlights_html.append(
-                    highlight_card(title, source, link)
-                )
-            links_html.append(
-                f"<li><a href='{link}' target='_blank'>{title}</a></li>"
-            )
+        for title, link in fetch_rss(url, limit=4):
+            if len(highlights) < MAX_HIGHLIGHTS:
+                highlights.append(highlight_card(title, source, link))
+            links.append(f"<li><a href='{link}' target='_blank'>{title}</a></li>")
 
-    if not highlights_html:
-        highlights_html.append(
-            highlight_card(
-                "Sem novidades relevantes",
-                "Sistema",
-                "#"
-            )
-        )
+    # fallback se RSS vier curto
+    for source, title, link in FALLBACK_HIGHLIGHTS:
+        if len(highlights) < MAX_HIGHLIGHTS:
+            highlights.append(highlight_card(title, source, link))
+            links.append(f"<li><a href='{link}' target='_blank'>{title}</a></li>")
 
-    # -------- RELEASE NOTES --------
+    # ---- RELEASE NOTES ----
     for row in RELEASE_NOTES_DATA[:MAX_RELEASE_NOTES]:
-        release_rows.append(release_row(*row))
+        releases.append(release_row(*row))
 
-    # -------- WHAT IT MEANS --------
-    what_it_means_html = """
+    # ---- VIDEOS ----
+    for channel, title in VIDEO_SUGGESTIONS[:MAX_VIDEOS]:
+        videos.append(video_card(channel, title))
+
+    what_it_means = """
     <div class="card">
         <h3>Impacto prático</h3>
         <p>
-        A IA está a mover-se rapidamente de chat para execução real de tarefas.
+        A IA está a evoluir rapidamente de chat para execução real de tarefas.
         Governança, custos e gestão de <em>breaking changes</em> tornam-se fatores
         críticos para equipas técnicas em 2026.
         </p>
     </div>
     """
 
-    # -------- VIDEOS --------
-    for channel, title in VIDEO_SUGGESTIONS[:MAX_VIDEOS]:
-        videos_html.append(video_card(channel, title))
-
-    # -------- TEMPLATE --------
+    # ---- TEMPLATE ----
     with open("template.html", encoding="utf-8") as f:
         html = f.read()
 
     html = html.replace("{{DATE}}", today)
-    html = html.replace("{{HIGHLIGHTS}}", "\n".join(highlights_html))
-    html = html.replace("{{WHAT_IT_MEANS}}", what_it_means_html)
-    html = html.replace("{{RELEASE_NOTES}}", "\n".join(release_rows))
-    html = html.replace("{{VIDEOS}}", "\n".join(videos_html))
-    html = html.replace("{{LINKS}}", "\n".join(links_html))
+    html = html.replace("{{HIGHLIGHTS}}", "\n".join(highlights))
+    html = html.replace("{{WHAT_IT_MEANS}}", what_it_means)
+    html = html.replace("{{RELEASE_NOTES}}", "\n".join(releases))
+    html = html.replace("{{VIDEOS}}", "\n".join(videos))
+    html = html.replace("{{LINKS}}", "\n".join(links))
 
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
-
-# ==================================================
 
 if __name__ == "__main__":
     main()
