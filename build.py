@@ -16,7 +16,7 @@ SOURCES = [
 ]
 
 VIDEO_SUGGESTIONS = [
-    ("Fireship", "AI Agents explained in 7 minutes 🔴 TESTE")
+    ("Fireship", "AI Agents explained in 7 minutes 🔴 TESTE"),
     ("Google Developers", "Google AI roadmap explained"),
     ("Anthropic", "Claude models & agents overview"),
     ("Notion", "Automating workflows with AI agents"),
