@@ -39,7 +39,7 @@ RELEASE_NOTES_DATA = [
 
 # ================= UTILS =================
 
-def clean(text):
+def clean(text: str) -> str:
     return re.sub(r"[<>]", "", text).strip()
 
 def fetch_rss(url, limit=5):
@@ -61,23 +61,23 @@ def fetch_rss(url, limit=5):
 
 def highlight_card(title, source, link):
     return f"""
-    <div class="card">
+    <a class="card" href="{link}" target="_blank" rel="noopener">
         <span class="tag">{source}</span>
         <h3>{title}</h3>
         <p>Atualização relevante publicada por {source}.</p>
-        <a href="{link}" target="_blank" rel="noopener">Ler na fonte →</a>
-    </div>
+        <span class="cta">Ler na fonte →</span>
+    </a>
     """
 
 def video_card(channel, title):
     query = urllib.parse.quote_plus(f"{channel} {title}")
     link = f"https://www.youtube.com/results?search_query={query}"
     return f"""
-    <div class="card">
+    <a class="card" href="{link}" target="_blank" rel="noopener">
         <strong>▶ {channel}</strong>
         <p>{title}</p>
-        <a href="{link}" target="_blank" rel="noopener">Ver no YouTube →</a>
-    </div>
+        <span class="cta">Ver no YouTube →</span>
+    </a>
     """
 
 def release_row(date, tool, change, link):
@@ -100,14 +100,14 @@ def main():
     videos = []
     releases = []
 
-    # ---- HIGHLIGHTS ----
+    # ---- HIGHLIGHTS (RSS) ----
     for source, url in SOURCES:
         for title, link in fetch_rss(url, limit=4):
             if len(highlights) < MAX_HIGHLIGHTS:
                 highlights.append(highlight_card(title, source, link))
             links.append(f"<li><a href='{link}' target='_blank'>{title}</a></li>")
 
-    # fallback se RSS vier curto
+    # ---- FALLBACK (garante conteúdo) ----
     for source, title, link in FALLBACK_HIGHLIGHTS:
         if len(highlights) < MAX_HIGHLIGHTS:
             highlights.append(highlight_card(title, source, link))
@@ -121,6 +121,7 @@ def main():
     for channel, title in VIDEO_SUGGESTIONS[:MAX_VIDEOS]:
         videos.append(video_card(channel, title))
 
+    # ---- WHAT IT MEANS ----
     what_it_means = """
     <div class="card">
         <h3>Impacto prático</h3>
@@ -145,6 +146,8 @@ def main():
 
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
+
+# ================= RUN =================
 
 if __name__ == "__main__":
     main()
