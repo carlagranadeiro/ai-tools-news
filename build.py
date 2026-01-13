@@ -6,9 +6,9 @@ from datetime import datetime
 
 # ================= CONFIG =================
 
-MAX_HIGHLIGHTS = 6
+MAX_HIGHLIGHTS = 5
 MAX_RELEASE_NOTES = 5
-MAX_VIDEOS = 5
+MAX_VIDEOS = 8
 
 SOURCES = [
     ("Google AI", "https://blog.google/technology/ai/rss/"),
@@ -16,7 +16,7 @@ SOURCES = [
 ]
 
 VIDEO_SUGGESTIONS = [
-    ("Fireship", "AI Agents explained in 8 minutes"),
+    ("Fireship", "AI Agents explained in 7 minutes"),
     ("Google Developers", "Google AI roadmap explained"),
     ("Anthropic", "Claude models & agents overview"),
     ("Notion", "Automating workflows with AI agents"),
