@@ -6,19 +6,13 @@ from datetime import datetime
 
 # ================= CONFIG =================
 
-MAX_HIGHLIGHTS = 8
+MAX_HIGHLIGHTS = 6
 MAX_RELEASE_NOTES = 5
 MAX_VIDEOS = 5
 
 SOURCES = [
     ("Google AI", "https://blog.google/technology/ai/rss/"),
     ("The Verge AI", "https://www.theverge.com/artificial-intelligence/rss/index.xml"),
-]
-
-FALLBACK_HIGHLIGHTS = [
-    ("OpenAI", "ChatGPT roadmap and platform updates", "https://openai.com/news"),
-    ("Anthropic", "Claude models and agent capabilities", "https://www.anthropic.com/news"),
-    ("Microsoft", "Copilot and AI platform evolution", "https://www.microsoft.com/blog"),
 ]
 
 VIDEO_SUGGESTIONS = [
@@ -30,19 +24,19 @@ VIDEO_SUGGESTIONS = [
 ]
 
 RELEASE_NOTES_DATA = [
-    ("12 jan 2026", "ChatGPT", "Melhorias de ditação e precisão.", "https://openai.com/news"),
-    ("15 jan 2026", "ChatGPT macOS", "Funcionalidade Voice será descontinuada.", "https://openai.com"),
-    ("11 jan 2026", "Claude", "Expansão para Healthcare & Life Sciences.", "https://www.anthropic.com/news"),
-    ("5 jan 2026", "Claude API", "Modelo Opus 3 removido; migrar para Opus 4.5.", "https://docs.anthropic.com"),
-    ("jan 2026", "Slack", "Melhorias em Huddles e workflows privados.", "https://slack.com/updates"),
+    ("12 jan 2026", "ChatGPT", "✍️ Melhorias claras de edição e precisão.", "https://openai.com/news"),
+    ("15 jan 2026", "ChatGPT macOS", "🛑 Funcionalidade Voice será removida.", "https://openai.com"),
+    ("11 jan 2026", "Claude", "🧬 Expansão para Healthcare & Life Sciences.", "https://www.anthropic.com/news"),
+    ("5 jan 2026", "Claude API", "⚠️ Opus 3 removido → migrar para Opus 4.5.", "https://docs.anthropic.com"),
+    ("jan 2026", "Slack", "💬 Melhorias visuais em Huddles.", "https://slack.com/updates"),
 ]
 
 # ================= UTILS =================
 
-def clean(text: str) -> str:
+def clean(text):
     return re.sub(r"[<>]", "", text).strip()
 
-def fetch_rss(url, limit=5):
+def fetch_rss(url, limit=4):
     try:
         with urllib.request.urlopen(url, timeout=20) as f:
             data = f.read()
@@ -62,10 +56,10 @@ def fetch_rss(url, limit=5):
 def highlight_card(title, source, link):
     return f"""
     <a class="card" href="{link}" target="_blank" rel="noopener">
-        <span class="tag">{source}</span>
+        <span class="tag">🚀 {source}</span>
         <h3>{title}</h3>
-        <p>Atualização relevante publicada por {source}.</p>
-        <span class="cta">Ler na fonte →</span>
+        <p><strong>NOTÍCIA IMPORTANTE</strong> — fonte: {source}</p>
+        <span class="cta">👉 Abrir artigo</span>
     </a>
     """
 
@@ -74,9 +68,9 @@ def video_card(channel, title):
     link = f"https://www.youtube.com/results?search_query={query}"
     return f"""
     <a class="card" href="{link}" target="_blank" rel="noopener">
-        <strong>▶ {channel}</strong>
+        <h3>🎥 {channel}</h3>
         <p>{title}</p>
-        <span class="cta">Ver no YouTube →</span>
+        <span class="cta">▶ Ver no YouTube</span>
     </a>
     """
 
@@ -84,60 +78,52 @@ def release_row(date, tool, change, link):
     return f"""
     <tr>
         <td>{date}</td>
-        <td>{tool}</td>
+        <td>🧩 {tool}</td>
         <td>{change}</td>
-        <td><a href="{link}" target="_blank" rel="noopener">Fonte</a></td>
+        <td><a href="{link}" target="_blank">Fonte</a></td>
     </tr>
     """
 
 # ================= MAIN =================
 
 def main():
-    today = datetime.now().strftime("%d %b %Y")
+    now = datetime.now()
+    timestamp = now.strftime("%H:%M:%S")
 
     highlights = []
-    links = []
     videos = []
     releases = []
+    links = []
 
-    # ---- HIGHLIGHTS (RSS) ----
+    # ---- HIGHLIGHTS ----
     for source, url in SOURCES:
-        for title, link in fetch_rss(url, limit=4):
+        for title, link in fetch_rss(url):
             if len(highlights) < MAX_HIGHLIGHTS:
                 highlights.append(highlight_card(title, source, link))
             links.append(f"<li><a href='{link}' target='_blank'>{title}</a></li>")
 
-    # ---- FALLBACK (garante conteúdo) ----
-    for source, title, link in FALLBACK_HIGHLIGHTS:
-        if len(highlights) < MAX_HIGHLIGHTS:
-            highlights.append(highlight_card(title, source, link))
-            links.append(f"<li><a href='{link}' target='_blank'>{title}</a></li>")
-
     # ---- RELEASE NOTES ----
-    for row in RELEASE_NOTES_DATA[:MAX_RELEASE_NOTES]:
+    for row in RELEASE_NOTES_DATA:
         releases.append(release_row(*row))
 
     # ---- VIDEOS ----
-    for channel, title in VIDEO_SUGGESTIONS[:MAX_VIDEOS]:
+    for channel, title in VIDEO_SUGGESTIONS:
         videos.append(video_card(channel, title))
 
-    # ---- WHAT IT MEANS ----
-    what_it_means = """
-    <div class="card">
-        <h3>Impacto prático</h3>
+    # ---- WHAT IT MEANS (DEBUG VISUAL) ----
+    what_it_means = f"""
+    <div class="card" style="background:rgba(122,162,255,0.15)">
+        <h3>🧠 Impacto prático (DEBUG)</h3>
         <p>
-        A IA está a evoluir rapidamente de chat para execução real de tarefas.
-        Governança, custos e gestão de <em>breaking changes</em> tornam-se fatores
-        críticos para equipas técnicas em 2026.
+        Esta página foi <strong>gerada automaticamente às {timestamp}</strong>.
+        Se estás a ver este texto, o <code>build.py</code> está ativo e o pipeline funciona.
         </p>
     </div>
     """
 
-    # ---- TEMPLATE ----
     with open("template.html", encoding="utf-8") as f:
         html = f.read()
 
-    html = html.replace("{{DATE}}", today)
     html = html.replace("{{HIGHLIGHTS}}", "\n".join(highlights))
     html = html.replace("{{WHAT_IT_MEANS}}", what_it_means)
     html = html.replace("{{RELEASE_NOTES}}", "\n".join(releases))
@@ -146,8 +132,6 @@ def main():
 
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
-
-# ================= RUN =================
 
 if __name__ == "__main__":
     main()
