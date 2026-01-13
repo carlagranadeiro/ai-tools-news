@@ -6,34 +6,154 @@
   <title>AI Tools News</title>
 
   <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #121a2b;
+      --border: rgba(255,255,255,0.12);
+      --text: #e9eefc;
+      --muted: rgba(233,238,252,0.65);
+      --accent: #7aa2ff;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: #0b1220;
-      color: #e9eefc;
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.6;
     }
+
     header {
-      padding: 24px;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
+      padding: 28px 24px;
+      border-bottom: 1px solid var(--border);
     }
-    h1 { margin: 0; }
-    .date { opacity: 0.7; font-size: 14px; }
-    main { max-width: 900px; margin: auto; padding: 24px; }
-    section { margin-bottom: 32px; }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .meta {
+      margin-top: 6px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 28px 24px;
+    }
+
+    section {
+      margin-bottom: 48px;
+    }
+
     h2 {
-      border-left: 4px solid #7aa2ff;
-      padding-left: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-left: 4px solid var(--accent);
+      padding-left: 12px;
+      margin-bottom: 18px;
     }
-    ul { padding-left: 20px; }
-    li { margin-bottom: 10px; }
-    a { color: #7aa2ff; }
+
+    /* ---------- CARDS ---------- */
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+
+    .card h3 {
+      margin: 6px 0 8px;
+      font-size: 17px;
+    }
+
+    .card p {
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .card a {
+      color: var(--accent);
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(122,162,255,0.15);
+      color: var(--accent);
+    }
+
+    /* ---------- TABLE ---------- */
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ---------- LINKS ---------- */
+
+    ul.links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    ul.links li {
+      margin-bottom: 8px;
+    }
+
+    ul.links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
     footer {
-      opacity: 0.6;
-      font-size: 13px;
+      border-top: 1px solid var(--border);
       padding: 24px;
       text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.15);
+      font-size: 13px;
+      color: var(--muted);
     }
   </style>
 </head>
@@ -42,66 +162,155 @@
 
 <header>
   <h1>🧠 AI Tools News</h1>
-  <div class="date">
-    Edição de <span id="autoDate"></span>
+  <div class="meta">
+    Atualizado: 13 Jan 2026 · Europe/Lisbon · Fontes: notas oficiais + imprensa · Modo: resumo diário
   </div>
 </header>
 
 <main>
 
-<section>
-  <h2>🔥 Highlights</h2>
-  <ul>
-    <li><strong>Google AI:</strong> <a href='https://blog.google/innovation-and-ai/technology/ai/look-back-2025/' target='_blank'>2025 at Google</a></li>
-<li><strong>Google AI:</strong> <a href='https://blog.google/innovation-and-ai/technology/ai/holiday-planning-ai-gemini-tips/' target='_blank'>The Google guide for holiday help</a></li>
-<li><strong>Google AI:</strong> <a href='https://blog.google/company-news/inside-google/company-announcements/investing-in-america-2025/' target='_blank'>Investing in America 2025</a></li>
-  </ul>
-</section>
+  <!-- HIGHLIGHTS -->
+  <section>
+    <h2>✨ Highlights</h2>
+    <div class="grid">
+      
+    <div class="card">
+        <span class='tag'>Google AI</span>
+        <h3>Veo 3.1 Ingredients to Video: More consistency, creativity and control</h3>
+        <p>Atualização relevante publicada por Google AI.</p>
+        <a href='https://blog.google/innovation-and-ai/technology/ai/veo-3-1-ingredients-to-video/' target='_blank'>Ler mais →</a>
+    </div>
+    
 
-<section>
-  <h2>🧾 Release Notes</h2>
-  <ul>
-    <li>ChatGPT: acompanhar release notes oficiais</li>
-<li>Gemini: atenção a mudanças de API e billing</li>
-<li>Anthropic: evolução contínua dos modelos Claude</li>
-  </ul>
-</section>
+    <div class="card">
+        <span class='tag'>Google AI</span>
+        <h3>2025 at Google</h3>
+        <p>Atualização relevante publicada por Google AI.</p>
+        <a href='https://blog.google/innovation-and-ai/technology/ai/look-back-2025/' target='_blank'>Ler mais →</a>
+    </div>
+    
+    </div>
+  </section>
 
-<section>
-  <h2>🧭 What it means</h2>
-  <ul>
-    <li>IA está a evoluir de chat para execução real de tarefas</li>
-<li>Automação exige controlo de permissões e auditoria</li>
-<li>Custos e breaking changes de API tornam-se críticos</li>
-  </ul>
-</section>
+  <!-- WHAT IT MEANS -->
+  <section>
+    <h2>🧭 What it means</h2>
+    
+    <div class="card">
+        
+        <h3>Impacto prático</h3>
+        <p>
+        A IA está a mover-se rapidamente de chat para execução real de tarefas.
+        Governança, custos e gestão de breaking changes tornam-se fatores críticos
+        para equipas técnicas em 2026.
+        </p>
+        
+    </div>
+    
+  </section>
 
-<section>
-  <h2>🔗 Links</h2>
-  <ul>
-    <li><a href='https://blog.google/innovation-and-ai/technology/ai/look-back-2025/' target='_blank'>2025 at Google</a></li>
-<li><a href='https://blog.google/innovation-and-ai/technology/ai/holiday-planning-ai-gemini-tips/' target='_blank'>The Google guide for holiday help</a></li>
-<li><a href='https://blog.google/company-news/inside-google/company-announcements/investing-in-america-2025/' target='_blank'>Investing in America 2025</a></li>
-  </ul>
-</section>
+  <!-- RELEASE NOTES -->
+  <section>
+    <h2>🧾 Release Notes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Ferramenta</th>
+          <th>O que mudou</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+    <tr>
+        <td>12 jan 2026</td>
+        <td>ChatGPT</td>
+        <td>Melhorias de ditação e precisão.</td>
+    </tr>
+    
+
+    <tr>
+        <td>15 jan 2026</td>
+        <td>ChatGPT macOS</td>
+        <td>Funcionalidade Voice será descontinuada.</td>
+    </tr>
+    
+
+    <tr>
+        <td>11 jan 2026</td>
+        <td>Claude</td>
+        <td>Expansão para Healthcare & Life Sciences.</td>
+    </tr>
+    
+
+    <tr>
+        <td>5 jan 2026</td>
+        <td>Claude API</td>
+        <td>Modelo Opus 3 removido; migrar para Opus 4.5.</td>
+    </tr>
+    
+
+    <tr>
+        <td>jan 2026</td>
+        <td>Slack</td>
+        <td>Melhorias em Huddles e workflows privados.</td>
+    </tr>
+    
+      </tbody>
+    </table>
+  </section>
+
+  <!-- VIDEOS -->
+  <section>
+    <h2>🎥 Vídeos recomendados</h2>
+    <div class="grid">
+      
+    <div class="card">
+        <strong>▶ Fireship</strong><br>
+        AI Agents explained in 8 minutes
+    </div>
+    
+
+    <div class="card">
+        <strong>▶ Google Developers</strong><br>
+        Google AI roadmap explained
+    </div>
+    
+
+    <div class="card">
+        <strong>▶ Anthropic</strong><br>
+        Claude models & agents overview
+    </div>
+    
+
+    <div class="card">
+        <strong>▶ Notion</strong><br>
+        Automating workflows with AI agents
+    </div>
+    
+
+    <div class="card">
+        <strong>▶ TechCrunch</strong><br>
+        Breaking changes in AI APIs
+    </div>
+    
+    </div>
+  </section>
+
+  <!-- LINKS -->
+  <section>
+    <h2>🔗 Links</h2>
+    <ul class="links">
+      <li><a href='https://blog.google/innovation-and-ai/technology/ai/veo-3-1-ingredients-to-video/' target='_blank'>Veo 3.1 Ingredients to Video: More consistency, creativity and control</a></li>
+<li><a href='https://blog.google/innovation-and-ai/technology/ai/look-back-2025/' target='_blank'>2025 at Google</a></li>
+    </ul>
+  </section>
 
 </main>
 
 <footer>
-  Página atualizada automaticamente todos os dias
+  Página atualizada automaticamente todos os dias · GitHub Actions
 </footer>
-
-<script>
-  const el = document.getElementById("autoDate");
-  const fmt = new Intl.DateTimeFormat("pt-PT", {
-    timeZone: "Europe/Lisbon",
-    year: "numeric",
-    month: "long",
-    day: "2-digit"
-  });
-  el.textContent = fmt.format(new Date());
-</script>
 
 </body>
 </html>
-
