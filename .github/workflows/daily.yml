@@ -1,5 +1,8 @@
 name: Daily AI Tools News Update
 
+permissions:
+  contents: write
+
 on:
   schedule:
     - cron: "0 7 * * *"   # todos os dias às 07:00 UTC
