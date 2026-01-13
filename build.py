@@ -16,7 +16,7 @@ SOURCES = [
 ]
 
 VIDEO_SUGGESTIONS = [
-    ("Fireship", "AI Agents explained in 7 minutes"),
+    ("Fireship", "AI Agents explained in 7 minutes 🔴 TESTE")
     ("Google Developers", "Google AI roadmap explained"),
     ("Anthropic", "Claude models & agents overview"),
     ("Notion", "Automating workflows with AI agents"),
@@ -24,7 +24,7 @@ VIDEO_SUGGESTIONS = [
 ]
 
 RELEASE_NOTES_DATA = [
-    ("12 jan 2026", "ChatGPT", "✍️ Melhorias claras de edição e precisão.", "https://openai.com/news"),
+     ("12 jan 2026", "ChatGPT", "✍️ Melhorias claras de edição e precisão.", "https://openai.com/news"),
     ("15 jan 2026", "ChatGPT macOS", "🛑 Funcionalidade Voice será removida.", "https://openai.com"),
     ("11 jan 2026", "Claude", "🧬 Expansão para Healthcare & Life Sciences.", "https://www.anthropic.com/news"),
     ("5 jan 2026", "Claude API", "⚠️ Opus 3 removido → migrar para Opus 4.5.", "https://docs.anthropic.com"),
